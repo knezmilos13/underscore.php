@@ -543,21 +543,43 @@ class __ {
     return self::_wrap(array_values($results));
   }
   
+  public function indexBy($collection=null, $iterator=null) {
+  	list($collection, $iterator) = self::_wrapArgs(func_get_args(), 2);
+
+    return $this->group($collection, $iterator, function(&$result, $key, $value) {
+      $result[$key] = $value;
+	});
+  }
   
-  // Group the collection by return values from the iterator
   public function groupBy($collection=null, $iterator=null) {
-    list($collection, $iterator) = self::_wrapArgs(func_get_args(), 2);
-    
+  	list($collection, $iterator) = self::_wrapArgs(func_get_args(), 2);
+
+    return $this->group($collection, $iterator, function(&$result, $key, $value) {
+	  if(!array_key_exists($key, $result)) $result[$key] = array();
+      $result[$key][] = $value;
+	});
+  }
+  
+  public function countBy($collection=null, $iterator=null) {
+  	list($collection, $iterator) = self::_wrapArgs(func_get_args(), 2);
+
+    return $this->group($collection, $iterator, function(&$result, $key, $value) {
+	  if(!array_key_exists($key, $result)) $result[$key]++;
+      $result[$key] = 1;
+	});
+  }
+  
+  /** An internal function used for aggregate "group by" operations. */
+  private function group($collection=null, $iterator=null, $behaviour=null) {
     $result = array();
     $collection = (array) $collection;
     foreach($collection as $k=>$v) {
+    	
       $key = (is_callable($iterator)) ? $iterator($v, $k) : $v[$iterator];
-      if(!array_key_exists($key, $result)) $result[$key] = array();
-      $result[$key][] = $v;
+      $behaviour($result, $key, $v);
     }
     return $result;
   }
-  
   
   // Returns the index at which the value should be inserted into the sorted collection
   public function sortedIndex($collection=null, $value=null, $iterator=null) {
