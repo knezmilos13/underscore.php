@@ -779,13 +779,20 @@ class __ {
     return self::_wrap(is_object($item));
   }
   
-  
+
   // Is this item an array?
   public function isArray($item=null) {
     list($item) = self::_wrapArgs(func_get_args(), 1);
     return self::_wrap(is_array($item));
   }
   
+  // Is this array an associative array? Returns false also if not array at all.
+  public function isAssocArray($item=null) {
+  	list($item) = self::_wrapArgs(func_get_args(), 1);
+	if(!is_array($item)) return false;
+  	for (reset($item); is_int(key($item)); next($item));
+	return self::_wrap(!is_null(key($item)));
+  }    
   
   // Is this item a string?
   public function isString($item=null) {
