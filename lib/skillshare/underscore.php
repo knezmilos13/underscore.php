@@ -543,6 +543,7 @@ class __ {
     return self::_wrap(array_values($results));
   }
   
+  // Index collection by return values from the iterator. Return values should be unique.
   public function indexBy($collection=null, $iterator=null) {
   	list($collection, $iterator) = self::_wrapArgs(func_get_args(), 2);
 
@@ -551,6 +552,7 @@ class __ {
 	});
   }
   
+  // Group the collection by return values from the iterator
   public function groupBy($collection=null, $iterator=null) {
   	list($collection, $iterator) = self::_wrapArgs(func_get_args(), 2);
 
@@ -560,6 +562,7 @@ class __ {
 	});
   }
   
+  // Count the number of elements in each group, where group is decided by iterator
   public function countBy($collection=null, $iterator=null) {
   	list($collection, $iterator) = self::_wrapArgs(func_get_args(), 2);
 
